@@ -2,6 +2,7 @@ require("dotenv").config()
 
 const { Telegraf } = require("telegraf")
 const Parser = require("rss-parser")
+const topics = require("./topics");
 const wait = hores => new Promise(resolve => setTimeout(resolve, hores * 60 * 60 * 1000))
 let parser = new Parser()
 let items = []
@@ -41,6 +42,8 @@ bot.hears("saluda", ctx => {
   ctx.telegram.sendMessage("@picateclas", "Salutacions desde el bot")
 })
 
+topics(bot);
+
 const main = async () => {
   for (;;) {
     await rssCheck()
@@ -55,4 +58,4 @@ bot
 process.once("SIGINT", () => bot.stop("SIGINT"))
 process.once("SIGTERM", () => bot.stop("SIGTERM"))
 
-main()
+//main()
