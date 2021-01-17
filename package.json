@@ -1,0 +1,24 @@
+{
+  "name": "teletram-bot-picateclas",
+  "version": "1.0.0",
+  "description": "Bot de Telegram per el grup picateclas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/girona/teletram-bot-picateclas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/girona/teletram-bot-picateclas/issues"
+  },
+  "homepage": "https://github.com/girona/teletram-bot-picateclas#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "telegraf": "^4.0.1"
+  }
+}
