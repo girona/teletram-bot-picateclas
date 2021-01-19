@@ -2,7 +2,7 @@ require("dotenv").config()
 
 const { Telegraf } = require("telegraf")
 const Parser = require("rss-parser")
-const topics = require("./topics");
+const topics = require("./topics")
 const wait = hores => new Promise(resolve => setTimeout(resolve, hores * 60 * 60 * 1000))
 let parser = new Parser()
 let items = []
@@ -37,12 +37,17 @@ bot.telegram.getMe().then(botInfo => {
 */
 
 bot.hears("saluda", ctx => {
-  console.log("saludant")
-  ctx.reply("buuuu")
-  ctx.telegram.sendMessage("@picateclas", "Salutacions desde el bot")
+  console.log(ctx.update.message.from.username + " saluda")
+  ctx.reply("buuuu ")
+  ctx.telegram.sendMessage("@picateclas", `${ctx.update.message.from.username} saluda desde el bot`)
 })
 
-topics(bot);
+bot.hears("uff", ctx => {
+  console.log(ctx.telegram.getChatMember("@picateclas"))
+  ctx.reply("uff")
+})
+
+topics(bot)
 
 const main = async () => {
   for (;;) {
