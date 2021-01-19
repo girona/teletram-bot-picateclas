@@ -8,15 +8,14 @@ let parser = new Parser()
 let items = []
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
+const chatId = process.env.CHAT_ID;
 
 const rssCheck = async () => {
   let feed = await parser.parseURL("http://feeds.weblogssl.com/genbeta")
-  console.log(feed.title)
-  feed.items
-  let new_items = feed.items.filter(item => items.map(it => it.link).includes(item.link))
-  for (const item in new_items) {
+  let new_items = feed.items.filter(item => item.link);
+  for (const item of new_items) {
     console.log(`${item.title} : ${item.link}`)
-    bot.telegram.sendMessage("@picateclas", `${item.title} : ${item.link}`)
+    bot.telegram.sendMessage(chatId, `${item.title} : ${item.link}`)
     await wait(2)
   }
   items = feed.items
@@ -39,7 +38,7 @@ bot.telegram.getMe().then(botInfo => {
 bot.hears("saluda", ctx => {
   console.log("saludant")
   ctx.reply("buuuu")
-  ctx.telegram.sendMessage("@picateclas", "Salutacions desde el bot")
+  ctx.telegram.sendMessage(chatId, "Salutacions desde el bot")
 })
 
 topics(bot);
@@ -58,4 +57,4 @@ bot
 process.once("SIGINT", () => bot.stop("SIGINT"))
 process.once("SIGTERM", () => bot.stop("SIGTERM"))
 
-//main()
+main()
