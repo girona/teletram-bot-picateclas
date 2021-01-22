@@ -12,7 +12,7 @@ const chatId = process.env.CHAT_ID;
 
 const rssCheck = async () => {
   let feed = await parser.parseURL("http://feeds.weblogssl.com/genbeta")
-  let new_items = feed.items.filter(item => item.link);
+  let new_items = feed.items.filter(item => items.map(it => it.link).includes(item.link))
   for (const item of new_items) {
     console.log(`${item.title} : ${item.link}`)
     bot.telegram.sendMessage(chatId, `${item.title} : ${item.link}`)
