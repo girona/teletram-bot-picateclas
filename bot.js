@@ -1,25 +1,12 @@
 require("dotenv").config()
 
 const { Telegraf } = require("telegraf")
-const Parser = require("rss-parser")
 const topics = require("./topics");
 const wait = hores => new Promise(resolve => setTimeout(resolve, hores * 60 * 60 * 1000))
-let parser = new Parser()
-let items = []
-
+const news = require('./news')
+const db = require('./fake_db')
 const bot = new Telegraf(process.env.BOT_TOKEN)
 const chatId = process.env.CHAT_ID;
-
-const rssCheck = async () => {
-  let feed = await parser.parseURL("http://feeds.weblogssl.com/genbeta")
-  let new_items = feed.items.filter(item => item.link);
-  for (const item of new_items) {
-    console.log(`${item.title} : ${item.link}`)
-    bot.telegram.sendMessage(chatId, `${item.title} : ${item.link}`)
-    await wait(2)
-  }
-  items = feed.items
-}
 
 bot.start(ctx => ctx.reply("Bot iniciat!"))
 
@@ -45,7 +32,13 @@ topics(bot);
 
 const main = async () => {
   for (;;) {
-    await rssCheck()
+    let news_items = await news.genbetaNews() 
+    for(let n of news_items.slice(1, 2)) { //només 1 noticia
+        db.add(n.link);
+        bot.telegram.sendMessage(chatId, n.link)
+            .catch((err) => console.log(err))
+    }
+    await wait(2)
   }
 }
 
