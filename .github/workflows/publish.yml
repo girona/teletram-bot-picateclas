@@ -4,7 +4,7 @@ on:
     branches:
       - main
 jobs:
-  push_to_registry:
+  build_and_push:
     name: Push Docker image
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +26,8 @@ jobs:
           tags: |
             girona/telegram-bot-picateclas:latest
             girona/telegram-bot-picateclas:${{ github.sha }}
-  deploy_to_docker:
+  deploy_to_server:
+    needs: build_and_push
     name: Deploy to docker
     runs-on: ubuntu-latest
     steps:
