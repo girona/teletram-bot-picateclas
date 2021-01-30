@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+      - name: Clean ssh problems
+        run: ssh-keygen -R ${{ secrets.DOCKER_HOST}}
       - name: Deploy to Docker
         uses: wshihadeh/docker-deployment-action@v1
         with:
