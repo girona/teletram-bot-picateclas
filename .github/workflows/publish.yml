@@ -36,4 +36,4 @@ jobs:
           deploy_path: /home/picateclas/telegram-bot-picateclas
           stack_file_name: docker-compose.yaml
           keep_files: 3
-          args: telegram-bot-picateclas
+          args: up telegram-bot-picateclas

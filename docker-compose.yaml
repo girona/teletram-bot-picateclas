@@ -1,6 +1,6 @@
 version: "3"
 services:
-  web:
+  telegram-bot-picateclas:
     image: girona/telegram-bot-picateclas:latest
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
