@@ -32,7 +32,7 @@ topics(bot);
 
 const main = async () => {
   for (;;) {
-    let news_items = await news.genbetaNews() 
+    let news_items = [...await news.genbetaNews(), ...await news.devNews()]
     for(let n of news_items.slice(1, 2)) { //només 1 noticia
         db.add(n.link);
         bot.telegram.sendMessage(chatId, n.link)
