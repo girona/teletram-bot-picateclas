@@ -43,4 +43,4 @@ jobs:
           keep_files: 1
           args: up -d telegram-bot-picateclas
           pull_images_first: true
-          #docker_prune: true
+          #docker_prune: true # NO UTILITZAR. DEPLOY CRASH
