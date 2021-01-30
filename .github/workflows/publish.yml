@@ -31,6 +31,8 @@ jobs:
     name: Deploy to docker
     runs-on: ubuntu-latest
     steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
       - name: Deploy to Docker
         uses: wshihadeh/docker-deployment-action@v1
         with:
