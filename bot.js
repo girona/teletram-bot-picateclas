@@ -2,11 +2,11 @@ require("dotenv").config()
 
 const { Telegraf } = require("telegraf")
 const topics = require("./topics");
-const wait = hores => new Promise(resolve => setTimeout(resolve, hores * 60 * 60 * 1000))
 const news = require('./news')
 const db = require('./fake_db')
 const bot = new Telegraf(process.env.BOT_TOKEN)
 const chatId = process.env.CHAT_ID;
+const wait = hores => new Promise(resolve => setTimeout(resolve, parseInt(process.env.HORES) * 60 * 60 * 1000))
 
 bot.start(ctx => ctx.reply("Bot iniciat!"))
 
