@@ -23,7 +23,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ github.sha }}
+          tags: |
+            girona/telegram-bot-picateclas:latest
+            girona/telegram-bot-picateclas:${{ github.sha }}
   deploy_to_docker:
     name: Deploy to docker
     runs-on: ubuntu-latest
