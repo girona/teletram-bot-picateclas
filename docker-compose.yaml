@@ -1,0 +1,7 @@
+version: "3"
+services:
+  web:
+    image: girona/telegram-bot-picateclas:latest
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - CHAT_ID=${CHAT_ID}
