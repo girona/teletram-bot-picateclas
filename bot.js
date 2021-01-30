@@ -1,17 +1,17 @@
 require("dotenv").config()
 
 const { Telegraf } = require("telegraf")
-const {Topics, TopicsList} = require("./topics");
+const { Topics, TopicsList } = require("./topics")
 const wait = hores => new Promise(resolve => setTimeout(resolve, hores * 60 * 60 * 1000))
-const News = require('./news')
-const DB = require('./fake_db')
+const News = require("./news")
+const DB = require("./fake_db")
 const bot = new Telegraf(process.env.BOT_TOKEN)
 const chatId = process.env.CHAT_ID
-
 
 bot.start(ctx => ctx.reply("Bot iniciat!"))
 
 /*
+Apunts interessants...
 
 bot.on("sticker", ctx => ctx.reply("👍"))
 
@@ -23,24 +23,33 @@ bot.telegram.getMe().then(botInfo => {
 })
 */
 
+/*
+  SALUTACIONS DE TESTING
+  He pensat que aixo ho podem usar per testejar els valors de ctx.
+  Seria interessant posar-hi una condicio que ens limiti a Eudald/Marc/Josep)
+*/
+
 bot.hears("saluda", ctx => {
   console.log("saludant")
-  ctx.reply("buuuu")
+  ctx.reply("He enviat salutacio de proba")
+})
+
+bot.hears("saluda_picateclas", ctx => {
+  console.log("saludant al chat")
   ctx.telegram.sendMessage(chatId, "Salutacions desde el bot")
 })
 
-Topics(bot);
+Topics(bot)
 
 const main = async () => {
   for (;;) {
-    let news_items = await News.genbetaNews() 
-    let news_items = [...await news.genbetaNews(), ...await news.devNews()]
-    for(let n of news_items.slice(1, 2)) { //només 1 noticia
-      if(TopicsList.some(topic => n.title.includes(topic))) {
-        DB.add(n.link);
-        bot.telegram.sendMessage(chatId, n.link)
-            .catch((err) => console.log(err))
-      } 
+    let news_items = [...(await news.genbetaNews()), ...(await news.devNews())]
+    for (let n of news_items.slice(1, 2)) {
+      //només 1 noticia
+      if (TopicsList.some(topic => n.title.includes(topic))) {
+        DB.add(n.link)
+        bot.telegram.sendMessage(chatId, n.link).catch(err => console.log(err))
+      }
     }
     await wait(2)
   }
@@ -48,7 +57,7 @@ const main = async () => {
 
 bot
   .launch()
-  .then(() => console.log("running..."))
+  .then(() => console.log(`TELEGRAM BOT: "${chatId}" running...`))
   .catch(error => console.error(error))
 
 process.once("SIGINT", () => bot.stop("SIGINT"))
