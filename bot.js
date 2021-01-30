@@ -8,6 +8,7 @@ const DB = require('./fake_db')
 const bot = new Telegraf(process.env.BOT_TOKEN)
 const chatId = process.env.CHAT_ID
 
+
 bot.start(ctx => ctx.reply("Bot iniciat!"))
 
 /*
@@ -33,6 +34,7 @@ Topics(bot);
 const main = async () => {
   for (;;) {
     let news_items = await News.genbetaNews() 
+    let news_items = [...await news.genbetaNews(), ...await news.devNews()]
     for(let n of news_items.slice(1, 2)) { //només 1 noticia
       if(TopicsList.some(topic => n.title.includes(topic))) {
         DB.add(n.link);

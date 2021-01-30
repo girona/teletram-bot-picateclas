@@ -8,6 +8,16 @@ https://telegraf.js.org/
 
 https://github.com/telegraf/telegraf
 
+### Config
+
+Crear fitxer **.env**:
+
+```
+BOT_TOKEN=
+CHAT_ID=
+HORES=
+```
+
 ### Idees...
 
 - Llençar el bot de rss a heroku dins de un contenidor docker.
