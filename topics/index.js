@@ -1,16 +1,17 @@
 const { MenuTemplate, MenuMiddleware, replyMenuToContext } = require('telegraf-inline-menu')
-const TelegrafStatelessQuestion = require('telegraf-stateless-question');
+const TelegrafStatelessQuestion = require('telegraf-stateless-question')
+const DefaultTopics = require('./default')
 
 const menu = new MenuTemplate(() => 'Topics')
+const topicsList = [...DefaultTopics]
+
 const topics = (bot) => {
 
-    let topics = [];
-    
     // Add topic
     
     const addTopic = new TelegrafStatelessQuestion('add_topic', async (ctx) => {
         const answer = ctx.message.text
-        topics.push(answer);
+        topicsList.push(answer);
         await ctx.reply(`Topic ${answer} afegit!`)
     
         return false;
@@ -28,8 +29,8 @@ const topics = (bot) => {
     
     const deleteTopic = new TelegrafStatelessQuestion('delete_topic', async (ctx) => {
         const answer = ctx.message.text
-        if(topics.includes(answer)) {
-            topics.splice(topics.indexOf(answer))
+        if(topicsList.includes(answer)) {
+            topicsList.splice(topics.indexOf(answer))
             await ctx.reply(`Topic ${answer} eliminat`)
         }
         else await ctx.reply("Aquest topic no existeix!")
@@ -50,7 +51,7 @@ const topics = (bot) => {
     menu.interact('List topic', 'list-topic', {
         hide: () => false,
         do: async ctx => {
-            await ctx.reply(topics)
+            await ctx.reply(topicsList)
             return false
         }
     })
@@ -61,4 +62,7 @@ const topics = (bot) => {
     bot.use(menuMiddleware.middleware())    
 }
 
-module.exports = topics;
+module.exports = {
+    TopicsList: topicsList,
+    Topics: topics
+};
