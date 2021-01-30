@@ -33,7 +33,7 @@ jobs:
           copy_stack_file: true
           deploy_path: /home/picateclas/telegram-bot-picateclas
           stack_file_name: docker-compose.yaml
-          keep_files: 3
-          args: up telegram-bot-picateclas
+          keep_files: 1
+          args: up -d telegram-bot-picateclas
           pull_images_first: true
           docker_prune: true
