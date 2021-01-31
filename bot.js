@@ -43,10 +43,9 @@ Topics(bot)
 
 const main = async () => {
   for (;;) {
-    let news_items = [...(await news.genbetaNews()), ...(await news.devNews())]
+    let news_items = [...(await News.genbetaNews()), ...(await News.devNews())]
     for (let n of news_items) {
-      //només 1 noticia
-      if (TopicsList.some(topic => n.title.includes(topic))) {
+      if (TopicsList.some(topic => n.title.toLowerCase().includes(topic))) {
         DB.add(n.link)
         bot.telegram.sendMessage(chatId, n.link).catch(err => console.log(err))
       }

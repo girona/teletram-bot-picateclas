@@ -1,8 +1,9 @@
 const DefaultTopics = [
     'kubernetes',
-    'go',
+    ' go ',
     'javascript',
-    'girona'
+    'girona',
+    'python'
 ]
 
 module.exports = DefaultTopics;
