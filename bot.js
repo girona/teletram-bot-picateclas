@@ -44,7 +44,7 @@ Topics(bot)
 const main = async () => {
   for (;;) {
     let news_items = [...(await news.genbetaNews()), ...(await news.devNews())]
-    for (let n of news_items.slice(1, 2)) {
+    for (let n of news_items) {
       //només 1 noticia
       if (TopicsList.some(topic => n.title.includes(topic))) {
         DB.add(n.link)
