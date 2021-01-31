@@ -1,8 +1,8 @@
 name: Publish Docker image
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "*"
 jobs:
   build_and_push:
     name: Push Docker image
@@ -41,6 +41,6 @@ jobs:
           deploy_path: /home/picateclas/telegram-bot-picateclas
           stack_file_name: docker-compose.yaml
           keep_files: 1
-          args: up -d telegram-bot-picateclas
+          args: up -d
           pull_images_first: true
           #docker_prune: true # NO UTILITZAR. DEPLOY CRASH
