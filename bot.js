@@ -3,7 +3,7 @@ const { Telegraf } = require("telegraf")
 const { Topics, TopicsList } = require("./topics")
 const wait = hores => new Promise(resolve => setTimeout(resolve, hores * 60 * 60 * 1000))
 const News = require("./news")
-const mongoose = require("mongodb")
+const mongoose = require("mongoose")
 const bot = new Telegraf(process.env.BOT_TOKEN)
 const chatId = process.env.CHAT_ID
 const dayjs = require("dayjs")
@@ -48,6 +48,7 @@ const main = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true
     })
+
     console.log("Mongo connected...")
   } catch (error) {
     console.error("PROBLEMES DE CONEXIO")
@@ -65,7 +66,7 @@ const main = async () => {
           try {
             let url = item.link.trim().toLowerCase()
             console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> ${url}`)
-            await Article.create({ url })
+            const article = await Article.create({ url })
             //await bot.telegram.sendMessage(chatId, url)
             console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Enviat: ${item.link}`)
           } catch (error) {
