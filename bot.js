@@ -43,26 +43,34 @@ bot.hears("saluda_picateclas", ctx => {
 Topics(bot)
 
 const main = async () => {
-  console.log(process.env.MONGODB)
-  await mongoose.connect(process.env.MONGODB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  process.exit(0)
+  try {
+    await mongoose.connect(process.env.MONGODB, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    console.log("Mongo connected...")
+  } catch (error) {
+    console.error("PROBLEMES DE CONEXIO")
+    console.error(error)
+    process.exit(0)
+  }
 
   for (;;) {
     for (let news_id of Object.keys(News)) {
       let news_items = []
       try {
+        console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> SCRAPPING: ${news_id}`)
         news_items = await News[news_id]()
         for (let item of news_items) {
           try {
             let url = item.link.trim().toLowerCase()
+            console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> ${url}`)
             await Article.create({ url })
-            await bot.telegram.sendMessage(chatId, url)
+            //await bot.telegram.sendMessage(chatId, url)
             console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Enviat: ${item.link}`)
           } catch (error) {
             console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Exists: ${item.link}`)
+            console.log(error)
           }
           await wait(1)
         }
