@@ -1,5 +1,4 @@
 const Parser = require("rss-parser")
-const db = require("../../fake_db")
 const parser = new Parser()
 
 module.exports = async () => {

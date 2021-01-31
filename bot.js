@@ -1,14 +1,12 @@
 require("dotenv").config()
-
 const { Telegraf } = require("telegraf")
 const { Topics, TopicsList } = require("./topics")
 const wait = hores => new Promise(resolve => setTimeout(resolve, hores * 60 * 60 * 1000))
 const News = require("./news")
-const dbConnect = require("./tools/dbConnect")
+const mongoose = require("mongodb")
 const bot = new Telegraf(process.env.BOT_TOKEN)
 const chatId = process.env.CHAT_ID
 const dayjs = require("dayjs")
-const mongoose = require("mongoose")
 const Article = require("./models/Article")
 
 bot.start(ctx => ctx.reply("Bot iniciat!"))
@@ -45,7 +43,12 @@ bot.hears("saluda_picateclas", ctx => {
 Topics(bot)
 
 const main = async () => {
-  await dbConnect()
+  console.log(process.env.MONGODB)
+  await mongoose.connect(process.env.MONGODB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  process.exit(0)
 
   for (;;) {
     for (let news_id of Object.keys(News)) {
