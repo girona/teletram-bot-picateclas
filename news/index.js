@@ -1,7 +1,7 @@
-const genbetaNews = require('./genbeta')
-const devNews = require('./dev')
+const genbetaNews = require("./genbeta")
+const devNews = require("./dev")
 
 module.exports = {
-    genbetaNews: genbetaNews,
-    devNews: devNews
+  genbetaNews,
+  devNews
 }

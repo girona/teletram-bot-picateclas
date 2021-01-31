@@ -7,6 +7,7 @@ const News = require("./news")
 const DB = require("./fake_db")
 const bot = new Telegraf(process.env.BOT_TOKEN)
 const chatId = process.env.CHAT_ID
+const dayjs = require("dayjs")
 
 bot.start(ctx => ctx.reply("Bot iniciat!"))
 
@@ -43,12 +44,23 @@ Topics(bot)
 
 const main = async () => {
   for (;;) {
-    let news_items = [...(await News.genbetaNews()), ...(await News.devNews())]
-    for (let n of news_items) {
-      if (TopicsList.some(topic => n.title.toLowerCase().includes(topic))) {
-        DB.add(n.link)
-        bot.telegram.sendMessage(chatId, n.link).catch(err => console.log(err))
-      }
+    const urls = ["", ""]
+    for (let news_id of Object.keys(News)) {
+      let news_items = []
+      try {
+        news_items = await News[news_id]()
+      } catch (error) {}
+      for (let item of news_items)
+        if (TopicsList.some(topic => item.title.trim().toLowerCase().includes(topic))) {
+          DB.add(item.link)
+          try {
+            await bot.telegram.sendMessage(chatId, item.link)
+            console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Enviant: ${item.link}`)
+          } catch (err) {
+            console.error("PROBLEMA AL ENVIAR MISSATJE:")
+            console.error(err)
+          }
+        }
     }
     await wait(2)
   }
