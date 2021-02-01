@@ -66,8 +66,8 @@ const main = async () => {
           try {
             let url = item.link.trim().toLowerCase()
             console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> ${url}`)
-            const article = await Article.create({ url })
-            //await bot.telegram.sendMessage(chatId, url)
+            await Article.create({ url })
+            await bot.telegram.sendMessage(chatId, url)
             console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Enviat: ${item.link}`)
           } catch (error) {
             console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Exists: ${item.link}`)
