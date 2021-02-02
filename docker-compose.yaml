@@ -5,5 +5,4 @@ services:
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - CHAT_ID=${CHAT_ID}
-    volumes:
-      - ./db/:/app/db
+      - MONGODB=${MONGODB}
