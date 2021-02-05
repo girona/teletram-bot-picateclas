@@ -10,6 +10,47 @@ const dayjs = require("dayjs")
 const Article = require("./models/Article")
 const WebsiteService = require("./service/WebsiteService")
 
+const conf = require("./config")
+const cron = require("node-cron")
+const initDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+
+    console.log("Mongo connected...")
+  } catch (error) {
+    console.error("PROBLEMES DE CONEXIO")
+    console.error(error)
+    process.exit(0)
+  }
+}
+
+const notificationNews = async () => {
+  for (let news_id of Object.keys(News)) {
+    let news_items = []
+    try {
+      console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> SCRAPPING: ${news_id}`)
+      news_items = await News[news_id]()
+      for (let item of news_items) {
+        try {
+          let url = item.link.trim().toLowerCase()
+          console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> ${url}`)
+          await Article.create({ url })
+          await bot.telegram.sendMessage(chatId, url)
+          console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Enviat: ${item.link}`)
+        } catch (error) {
+          console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Exists: ${item.link}`)
+          console.log(error)
+        }
+        await wait(0.1)
+      }
+    } catch (error) {
+      console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : URL: ${news_id} PROBLEM`)
+    }
+  }
+}
 const init = async () => {
     try {
         await mongoose.connect(process.env.MONGODB, {
@@ -135,3 +176,10 @@ const init = async () => {
 }
 
 init();
+initDB()
+
+for(let cronConf of conf.crons) {
+  cron.schedule(cronConf, function() {
+    notificationNews()
+  })
+}
