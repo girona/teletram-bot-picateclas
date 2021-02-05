@@ -1,56 +1,57 @@
 require("dotenv").config()
 const {Telegraf} = require("telegraf")
 const {Topics} = require("./topics")
-const wait = hores => new Promise(resolve => setTimeout(resolve, hores * 60 * 60 * 1000))
-const News = require("./news")
+const wait = hours => new Promise(resolve => setTimeout(resolve, hours * 60 * 60 * 1000))
 const mongoose = require("mongoose")
 const bot = new Telegraf(process.env.BOT_TOKEN)
 const chatId = process.env.CHAT_ID
 const dayjs = require("dayjs")
 const Article = require("./models/Article")
 const WebsiteService = require("./service/WebsiteService")
+const NewsService = require("./service/NewsService")
 
 const conf = require("./config");
 const cron = require("node-cron");
 
 const initDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
+    try {
+        await mongoose.connect(process.env.MONGODB, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
 
-    console.log("Mongo connected...")
-  } catch (error) {
-    console.error("PROBLEMES DE CONEXIO")
-    console.error(error)
-    process.exit(0)
-  }
+        console.log("Mongo connected...")
+    } catch (error) {
+        console.error("PROBLEMES DE CONEXIO")
+        console.error(error)
+        process.exit(0)
+    }
 }
 
 const notificationNews = async () => {
-  for (let news_id of Object.keys(News)) {
-    let news_items = []
-    try {
-      console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> SCRAPPING: ${news_id}`)
-      news_items = await News[news_id]()
-      for (let item of news_items) {
+    const websites = await WebsiteService.getAll()
+    for (let website of websites) {
+        let news_items = []
         try {
-          let url = item.link.trim().toLowerCase()
-          console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> ${url}`)
-          await Article.create({ url })
-          await bot.telegram.sendMessage(chatId, url)
-          console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Enviat: ${item.link}`)
+            console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> SCRAPPING: ${website.name}`)
+            news_items = await NewsService.parseUrl(website.url)
+            for (let item of news_items) {
+                try {
+                    let url = item.link.trim().toLowerCase()
+                    console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} -> ${url}`)
+                    await Article.create({url})
+                    await bot.telegram.sendMessage(chatId, url)
+                    console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Enviat: ${item.link}`)
+                } catch (error) {
+                    console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Exists: ${item.link}`)
+                    console.log(error)
+                }
+                await wait(0.1)
+            }
         } catch (error) {
-          console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : Exists: ${item.link}`)
-          console.log(error)
+            console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : URL: ${website.name} ${error}`)
         }
-        await wait(0.1)
-      }
-    } catch (error) {
-      console.log(`${dayjs().format("YYYY-MM-DD HH:mm:ss")} : URL: ${news_id} PROBLEM`)
     }
-  }
 }
 
 function hasArguments() {
@@ -59,7 +60,7 @@ function hasArguments() {
 
 const init = async () => {
     await initDB();
-    if(hasArguments()) {
+    if (hasArguments()) {
         const args = process.argv.slice(2);
         if (args[0] === '-h') {
             console.log("TODO: HELP")
@@ -109,8 +110,8 @@ const init = async () => {
         process.once("SIGINT", () => bot.stop("SIGINT"))
         process.once("SIGTERM", () => bot.stop("SIGTERM"))
 
-        for(let cronConf of conf.crons) {
-            cron.schedule(cronConf, function() {
+        for (let cronConf of conf.crons) {
+            cron.schedule(cronConf, function () {
                 notificationNews()
             })
         }
