@@ -17,12 +17,3 @@ BOT_TOKEN=
 CHAT_ID=
 HORES=
 ```
-
-### Idees...
-
-- Llençar el bot de rss a heroku dins de un contenidor docker.
-- Obtenir algun tipus de permanencia per saber quins son els ultims rss enviats.
-
-Si voleu millorar el bot os puc facilitar el token.
-
-Salut i força!!
